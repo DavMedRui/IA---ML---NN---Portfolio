@@ -27,6 +27,8 @@ Thumbs.db
 
 # Large data files (use Git LFS instead)
 *.csv
+# Allow small CSV files for Neo4j (Cypher queries, not data)
+!03-Big-Data/Neo4j/*.csv
 *.npz
 *.npy
 *.asc

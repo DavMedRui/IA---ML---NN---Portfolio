@@ -1,0 +1,166 @@
+name,description,query,id,parentId,isFolder
+TareaLenguajeCypher,,,0,,true
+Creaciones,,"CREATE
+(u1:Usuario {nombre: ""Ana"", apellidos: ""García López"",
+username: ""agarcia"", edad: 25}),
+(u2:Usuario {nombre: ""Luis"", apellidos: ""Martín Pérez"",
+username: ""lmartin"", edad: 30}),
+(u3:Usuario {nombre: ""Marta"", apellidos: ""Sánchez Ruiz"",
+username: ""msanchez"", edad: 22}),
+(u4:Usuario {nombre: ""Carlos"", apellidos: ""Fernández Díaz"",
+username: ""cfernandez"", edad: 40}),
+(u5:Usuario {nombre: ""Lucia"", apellidos: ""Romero Gil"",
+username: ""lromero"", edad: 28}),
+(u6:Usuario {nombre: ""Pedro"", apellidos: ""López Mora"",
+username: ""plopez"", edad: 35}),
+(u7:Usuario {nombre: ""Sara"", apellidos: ""Jiménez Cruz"",
+username: ""sjimenez"", edad: 27}); CREATE
+(p1:Pelicula {titulo: ""Origen"", año: 2010}),
+(p2:Pelicula {titulo: ""Interstellar"", año: 2014}),
+(p3:Pelicula {titulo: ""Matrix"", año: 1999}),
+(p4:Pelicula {titulo: ""Inception 2"", año: 2022}),
+(p5:Pelicula {titulo: ""Tenet"", año: 2020}),
+(p6:Pelicula {titulo: ""El Padrino"", año: 1972});
+CREATE
+(s1:Serie {titulo: ""Stranger Things"", temporadas: 4}),
+(s2:Serie {titulo: ""Breaking Bad"", temporadas: 5}),
+(s3:Serie {titulo: ""Dark"", temporadas: 3}),
+(s4:Serie {titulo: ""The Office"", temporadas: 9}),
+(s5:Serie {titulo: ""La Casa de Papel"", temporadas: 5}),
+(s6:Serie {titulo: ""The Witcher"", temporadas: 3}); CREATE
+(d1:Director {nombre: ""Christopher Nolan""}),
+(d2:Director {nombre: ""Vince Gilligan""}),
+(d3:Director {nombre: ""Lana Wachowski""}),
+(d4:Director {nombre: ""Ricky Gervais""}),
+(d5:Director {nombre: ""Francis Ford Coppola""}),
+(d6:Director {nombre: ""Álex Pina""}); CREATE
+(g1:Genero {nombre: ""Ciencia Ficción""}),
+(g2:Genero {nombre: ""Drama""}),
+(g3:Genero {nombre: ""Acción""}),
+(g4:Genero {nombre: ""Comedia""}),
+(g5:Genero {nombre: ""Crimen""}), (g6:Genero {nombre: ""Fantasía""});
+
+
+",1,0,false
+Relaciones,,"MATCH (u1:Usuario {username:""agarcia""}), (p1:Pelicula
+{titulo:""Origen""})
+CREATE (u1)-[:VE]->(p1);
+MATCH (u1:Usuario {username:""agarcia""}), (s2:Serie
+{titulo:""Breaking Bad""})
+CREATE (u1)-[:VE]->(s2);
+MATCH (u2:Usuario {username:""lmartin""}), (p2:Pelicula
+{titulo:""Interstellar""})
+CREATE (u2)-[:VE]->(p2);
+MATCH (u3:Usuario {username:""msanchez""}), (s1:Serie
+{titulo:""Stranger Things""})
+CREATE (u3)-[:VE]->(s1);
+MATCH (u4:Usuario {username:""cfernandez""}), (p3:Pelicula
+{titulo:""Matrix""})
+CREATE (u4)-[:VE]->(p3);
+MATCH (u5:Usuario {username:""lromero""}), (s3:Serie
+{titulo:""Dark""})
+CREATE (u5)-[:VE]->(s3);
+MATCH (u6:Usuario {username:""plopez""}), (p5:Pelicula
+{titulo:""Tenet""})
+CREATE (u6)-[:VE]->(p5);
+MATCH (u7:Usuario {username:""sjimenez""}), (s5:Serie
+{titulo:""La Casa de Papel""})
+CREATE (u7)-[:VE]->(s5);
+MATCH (u2:Usuario {username:""lmartin""}), (p6:Pelicula
+{titulo:""El Padrino""})
+CREATE (u2)-[:VE]->(p6);
+MATCH (u3:Usuario {username:""msanchez""}), (s6:Serie
+{titulo:""The Witcher""})
+CREATE (u3)-[:VE]->(s6); MATCH (p1:Pelicula {titulo:""Origen""}), (d1:Director
+{nombre:""Christopher Nolan""})
+CREATE (p1)-[:DIRIGIDA_POR]->(d1);MATCH (p2:Pelicula {titulo:""Interstellar""}), (d1:Director{nombre:""Christopher Nolan""})
+CREATE (p2)-[:DIRIGIDA_POR]->(d1); MATCH (p3:Pelicula {titulo:""Matrix""}), (d3:Director
+{nombre:""Lana Wachowski""})
+CREATE (p3)-[:DIRIGIDA_POR]->(d3);
+MATCH (p4:Pelicula {titulo:""Inception 2""}), (d1:Director
+{nombre:""Christopher Nolan""})
+CREATE (p4)-[:DIRIGIDA_POR]->(d1);
+MATCH (p5:Pelicula {titulo:""Tenet""}), (d1:Director
+{nombre:""Christopher Nolan""})
+CREATE (p5)-[:DIRIGIDA_POR]->(d1);
+MATCH (p6:Pelicula {titulo:""El Padrino""}), (d5:Director
+{nombre:""Francis Ford Coppola""})
+CREATE (p6)-[:DIRIGIDA_POR]->(d5);
+MATCH (s2:Serie {titulo:""Breaking Bad""}), (d2:Director
+{nombre:""Vince Gilligan""})
+CREATE (s2)-[:DIRIGIDA_POR]->(d2);
+MATCH (s3:Serie {titulo:""Dark""}), (d3:Director {nombre:""Lana
+Wachowski""})
+CREATE (s3)-[:DIRIGIDA_POR]->(d3);
+MATCH (s4:Serie {titulo:""The Office""}), (d4:Director
+{nombre:""Ricky Gervais""})
+CREATE (s4)-[:DIRIGIDA_POR]->(d4);
+MATCH (s5:Serie {titulo:""La Casa de Papel""}), (d6:Director
+{nombre:""Álex Pina""})
+CREATE (s5)-[:DIRIGIDA_POR]->(d6);
+MATCH (s6:Serie {titulo:""The Witcher""}), (d1:Director
+{nombre:""Christopher Nolan""})
+CREATE (s6)-[:DIRIGIDA_POR]->(d1);
+MATCH (p1:Pelicula {titulo:""Origen""}), (g1:Genero
+{nombre:""Ciencia Ficción""})
+CREATE (p1)-[:PERTENECE_A]->(g1);
+MATCH (p2:Pelicula {titulo:""Interstellar""}), (g1:Genero
+{nombre:""Ciencia Ficción""})
+CREATE (p2)-[:PERTENECE_A]->(g1);
+MATCH (p3:Pelicula {titulo:""Matrix""}), (g3:Genero{nombre:""Acción""})
+CREATE (p3)-[:PERTENECE_A]->(g3);
+MATCH (p4:Pelicula {titulo:""Inception 2""}), (g1:Genero
+{nombre:""Ciencia Ficción""})
+CREATE (p4)-[:PERTENECE_A]->(g1);
+MATCH (p5:Pelicula {titulo:""Tenet""}), (g1:Genero
+{nombre:""Ciencia Ficción""})
+CREATE (p5)-[:PERTENECE_A]->(g1);
+MATCH (p6:Pelicula {titulo:""El Padrino""}), (g5:Genero
+{nombre:""Crimen""})
+CREATE (p6)-[:PERTENECE_A]->(g5);
+MATCH (s1:Serie {titulo:""Stranger Things""}), (g1:Genero
+{nombre:""Ciencia Ficción""})
+CREATE (s1)-[:PERTENECE_A]->(g1);
+MATCH (s2:Serie {titulo:""Breaking Bad""}), (g2:Genero
+{nombre:""Drama""})
+CREATE (s2)-[:PERTENECE_A]->(g2);
+MATCH (s3:Serie {titulo:""Dark""}), (g1:Genero {nombre:""Ciencia
+Ficción""})
+CREATE (s3)-[:PERTENECE_A]->(g1);
+MATCH (s4:Serie {titulo:""The Office""}), (g4:Genero
+{nombre:""Comedia""})
+CREATE (s4)-[:PERTENECE_A]->(g4);
+MATCH (s5:Serie {titulo:""La Casa de Papel""}), (g5:Genero
+{nombre:""Crimen""})
+CREATE (s5)-[:PERTENECE_A]->(g5);
+MATCH (s6:Serie {titulo:""The Witcher""}), (g6:Genero
+{nombre:""Fantasía""})
+CREATE (s6)-[:PERTENECE_A]->(g6);",2,0,false
+1.Restricción username_usuario,,CREATE CONSTRAINT username_usuario FOR (u:Usuario) REQUIRE u.nombre IS UNIQUE,3,0,false
+2.Consulta TotalUsuarios,,MATCH(u:Usuario) RETURN count(u) AS TotalUsuarios,4,0,false
+3.Consulta Nombre y Apellido,,"MATCH (u:Usuario) WHERE u.edad > 30 RETURN u.nombre, u.apellidos",5,0,false
+"4.Consulta Titulos y años ",,"MATCH (p:Pelicula) RETURN p.titulo, p.año ORDER BY p.año ",6,0,false
+5.Devolver películas vistas sin where,,"MATCH(u:Usuario{nombre:""Ana""})-[:VE]->(p:Pelicula) RETURN p.titulo",7,0,false
+6.Series con mas de 3 temporadas,,"MATCH (s:Serie) WHERE s.temporadas > 3 RETURN s.titulo, s.temporadas",8,0,false
+7.Director y peliculas,,"MATCH (d:Director)<-[:DIRIGIDA_POR]-(p:Pelicula) RETURN d.nombre, p.titulo",9,0,false
+8.Matrix y Género,,"MATCH (p:Pelicula{titulo:""Matrix""})-[:PERTENECE_A]->(g:Genero) RETURN p.titulo, g.nombre",10,0,false
+9. Usuario y Contenido. Enunciado incompleto,,"MATCH (u:Usuario)-[:VE]->(n) RETURN u.nombre, n.titulo",11,0,false
+10.Crear serie Friends,,"MERGE(s:Serie{titulo:""Friends"", temporadas:10}) RETURN s",12,0,false
+11.Usuarios de mayor a menor edad,,"MATCH (u:Usuario) RETURN u.nombre, u.apellidos, u.edad ORDER BY u.edad DESC LIMIT 3",13,0,false
+12. Modificar edad,,"MATCH(u:Usuario{username:""cfernandez""}) SET u.edad = 45 RETURN u.edad ",14,0,false
+13. Crea usuario y relaciona con origen,,"CREATE (u:Usuario{nombre:""David"", apellidos:""Medina Ruiz"", edad:""29"", username:""davmedrui""}) MATCH (p:Pelicula{titulo:""Origen""}) MERGE (u)-[:VE]->(p) RETURN u,p",15,0,false
+14. Relaciona Dark con Drama,,"MATCH (s:Serie{titulo:""Dark""}), (g:Genero{nombre:""Drama""}) MERGE (s)-[:PERTENECE_A]->(g) RETURN s,g",16,0,false
+15.Pelicula no vista,,"MATCH (p:Pelicula)
+WHERE NOT ((:Usuario)-[:VE]->(p))
+RETURN p",17,0,false
+16.Añade etiqueta clasica,,"MATCH (p:Pelicula) WHERE p.año < 2005 SET p.clasica=""sí"" RETURN p",18,0,false
+17.Camino usuario hasta directores,,"MATCH (u:Usuario)-[:VE]->(n)-[:DIRIGIDA_POR]->(d:Director)
+WHERE u<>d
+RETURN u.nombre, ""ha visto"" ,n.titulo, ""que está dirigida por"" ,d.nombre
+",19,0,false
+18.Eliminar Inception,,"MATCH (p:Pelicula) WHERE p.titulo =""Inception 2"" DETACH DELETE p
+",20,0,false
+19.Visualizaciones de genero por usuario,,"MATCH (u:Usuario) -[:VE]->(n)-[:PERTENECE_A]->(g:Genero) 
+RETURN u.username,g.nombre, COUNT(g) AS visualizaciones",21,0,false
+20.Directores y visualizaciones,,"MATCH (d:Director) <-[:DIRIGIDA_POR]-(n)<-[v:VE]-(u:Usuario)
+RETURN d.nombre, COUNT(v) AS visualizaciones",22,0,false

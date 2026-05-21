@@ -1,0 +1,169 @@
+name,description,query,id,parentId,isFolder
+Tarea Algoritmos,,,0,,true
+Ejercicio1,,,1,0,true
+1.Importacion Ciudades,,"WITH
+""https://drive.google.com/uc?export=download&id=1jKVmoEljg_MYs8Q6h-S_uzXmMp6tsKP-""
+AS uri
+LOAD CSV WITH HEADERS FROM uri AS row
+MERGE (c:Ciudad {nombre:row.nombre})
+SET c.id = toFloat(row.id)
+",2,1,false
+1.Importacion Relaciones,,"WITH
+""https://drive.google.com/uc?export=download&id=1s-vDv9uSKT1_gSy9UZSXAMCnf2aG54JA""
+AS uri
+LOAD CSV WITH HEADERS FROM uri AS row
+
+MATCH (c1:Ciudad {nombre: row.origen})
+MATCH (c2:Ciudad {nombre: row.destino})
+
+MERGE (c1)-[r:CONECTA]->(c2)
+SET r.distancia = toFloat(row.distancia),
+    r.coste = toFloat(row.coste),
+    r.trafico = toFloat(row.trafico);",3,1,false
+2.Almacenar Grafo,,"CALL 
+gds.graph.project(""grafoCiudades"",""Ciudad"",""CONECTA"",{ relationshipProperties:[""distancia"", ""coste"", ""trafico""]})",4,1,false
+3.Camino mas corto Distancia,,"MATCH (origen:Ciudad {nombre: 'Barcelona'}), (destino:Ciudad {nombre:
+'Santiago'})
+CALL gds.shortestPath.dijkstra.stream('grafoCiudades', {
+sourceNode: origen,
+targetNode: destino,
+ relationshipWeightProperty: 'distancia'})
+YIELD index, sourceNode, targetNode, totalCost, nodeIds,
+costs, path
+RETURN
+gds.util.asNode(sourceNode).nombre AS Origen,
+gds.util.asNode(targetNode).nombre AS Destino,
+totalCost AS costeTotal,
+[nodeId IN nodeIds | gds.util.asNode(nodeId).nombre] AS
+nodosRecorridos,
+costs AS costeAcumulado,
+nodes(path) AS recorrido;",5,1,false
+4.Camino mas corto Saltos,,"MATCH (origen:Ciudad {nombre: 'Barcelona'}), (destino:Ciudad {nombre:
+'Santiago'})
+CALL gds.shortestPath.dijkstra.stream('grafoCiudades', {
+sourceNode: origen,
+targetNode: destino,
+ relationshipWeightProperty: null})
+YIELD index, sourceNode, targetNode, totalCost, nodeIds,
+costs, path
+RETURN
+gds.util.asNode(sourceNode).nombre AS Origen,
+gds.util.asNode(targetNode).nombre AS Destino,
+totalCost AS SaltosTotal,
+[nodeId IN nodeIds | gds.util.asNode(nodeId).nombre] AS
+nodosRecorridos,
+costs AS costeAcumulado,
+nodes(path) AS recorrido;",6,1,false
+5. Camino mas corto Coste,,"MATCH (origen:Ciudad {nombre: 'Sevilla'}), (destino:Ciudad {nombre:
+'Bilbao'})
+CALL gds.shortestPath.dijkstra.stream('grafoCiudades', {
+sourceNode: origen,
+targetNode: destino,
+ relationshipWeightProperty: ""coste""})
+YIELD index, sourceNode, targetNode, totalCost, nodeIds,
+costs, path
+RETURN
+gds.util.asNode(sourceNode).nombre AS Origen,
+gds.util.asNode(targetNode).nombre AS Destino,
+totalCost AS CosteTotal,
+[nodeId IN nodeIds | gds.util.asNode(nodeId).nombre] AS
+nodosRecorridos,
+costs AS costeAcumulado,
+nodes(path) AS recorrido;",7,1,false
+6.1 Creación de nueva ciudad y relación,,"CREATE (b:Ciudad {id:20.0, nombre:""Badajoz""})
+WITH b
+MATCH (m:Ciudad {nombre:""Madrid""}), (s:Ciudad {nombre:""Sevilla""})
+CREATE (b)-[:CONECTA {distancia:250, coste:33, trafico:2}]->(m),
+       (m)-[:CONECTA {distancia:250, coste:33, trafico:2}]->(b),
+       (b)-[:CONECTA {distancia:200, coste:30, trafico:1}]->(s),
+       (s)-[:CONECTA {distancia:200, coste:30, trafico:1}]->(b);",8,1,false
+6.1.1. Actualización del grafo para que funcione,,"CALL gds.graph.drop(""grafoCiudades"");
+
+CALL gds.graph.project(""grafoCiudades"",""Ciudad"",""CONECTA"",{ relationshipProperties:[""distancia"", ""coste"", ""trafico""]})",9,1,false
+6.2 Camino menos trafico con Badajoz,,"MATCH (origen:Ciudad {nombre: 'Málaga'}), (destino:Ciudad {nombre:
+'Toledo'})
+CALL gds.shortestPath.dijkstra.stream('grafoCiudades', {
+sourceNode: id(origen),
+targetNode: id(destino),
+relationshipWeightProperty: ""trafico""})
+YIELD sourceNode, targetNode, totalCost, nodeIds,
+costs, path
+RETURN
+gds.util.asNode(sourceNode).nombre AS Origen,
+gds.util.asNode(targetNode).nombre AS Destino,
+totalCost AS TraficoTotal,
+[nodeId IN nodeIds | gds.util.asNode(nodeId).nombre] AS
+nodosRecorridos,
+costs AS TraficoAcumulado,
+nodes(path) AS recorrido;",10,1,false
+7.1 Borrar Madrid y Conexiones,,"MATCH (m:Ciudad{nombre:""Madrid""}) DETACH DELETE m",11,1,false
+7.2 Calcular camino más corto sin Madrid,,"MATCH (origen:Ciudad {nombre: 'Granada'}), (destino:Ciudad {nombre:
+'Santiago'})
+CALL gds.shortestPath.dijkstra.stream('grafoCiudades', {
+sourceNode: origen,
+targetNode: destino,
+ relationshipWeightProperty: 'distancia'})
+YIELD index, sourceNode, targetNode, totalCost, nodeIds,
+costs, path
+RETURN
+gds.util.asNode(sourceNode).nombre AS Origen,
+gds.util.asNode(targetNode).nombre AS Destino,
+totalCost AS DistanciaTotal,
+[nodeId IN nodeIds | gds.util.asNode(nodeId).nombre] AS
+nodosRecorridos,
+costs AS DistanciaAcumulado,
+nodes(path) AS recorrido;",12,1,false
+Ejercicio2,,,13,0,true
+1.1 Importación usuarios,,"WITH
+""https://drive.google.com/uc?export=download&id=1jqm5TywqNcTPi7-ZEK7U3-rThADuLT88""
+AS uri
+LOAD CSV WITH HEADERS FROM uri AS row
+MERGE (i:Influencer {nombre:row.nombre, seguidores:row.seguidores, categoria:row.categoria})
+SET i.id = toInteger(row.id)
+",14,13,false
+1.2 Importación Comparte,,"WITH ""https://drive.google.com/uc?export=download&id=1WAg_5Wsh0OZVm04dsJV9jUhgzCUqoe7-"" AS uri LOAD CSV WITH HEADERS FROM uri AS row
+MATCH (u1:Usuario {id: toInteger(row.origen)})
+MATCH (u2:Usuario {id: toInteger(row.destino)})
+
+MERGE (u1)-[r:COMPARTE]->(u2)
+",15,13,false
+2.1 Almacenar grafo,,"CALL 
+gds.graph.project(""grafoInfluencer"",""Usuario"",{COMPARTE: {orientation:""UNDIRECTED""}})",16,13,false
+3.1 Centralidad ordenado por grado,,"CALL gds.degree.stream('grafoInfluencer')
+YIELD nodeId, score
+RETURN gds.util.asNode(nodeId).nombre AS nombre, 
+gds.util.asNode(nodeId).seguidores AS seguidores,
+gds.util.asNode(nodeId).categoria AS categoria,
+score as grado
+ORDER BY grado DESC
+",17,13,false
+4.1 Grado Cercania,,"CALL gds.closeness.stream('grafoInfluencer')
+YIELD nodeId, score
+RETURN gds.util.asNode(nodeId).nombre AS nombre,
+gds.util.asNode(nodeId).seguidores AS seguidores,
+score AS grado_cercania
+ORDER BY grado_cercania DESC, seguidores DESC
+",18,13,false
+5.1 Grado Intermediacion,,"CALL gds.betweenness.stream('grafoInfluencer')
+YIELD nodeId, score
+RETURN gds.util.asNode(nodeId).nombre AS nombre, 
+gds.util.asNode(nodeId).seguidores AS seguidores,
+gds.util.asNode(nodeId).categoria AS categoria,
+score AS grado_intermediacion
+ORDER BY score DESC",19,13,false
+7.1 Conteo Triangulos,,"CALL gds.triangleCount.stream('grafoInfluencer')
+YIELD nodeId, triangleCount
+RETURN gds.util.asNode(nodeId).nombre AS nombre,
+gds.util.asNode(nodeId).seguidores AS seguidores,
+gds.util.asNode(nodeId).categoria AS categoria,
+triangleCount AS conteo_triangulos
+ORDER BY conteo_triangulos DESC
+",20,13,false
+8.1 Coeficiente de centralidad local,,"CALL
+gds.localClusteringCoefficient.stream('grafoInfluencer')
+YIELD nodeId, localClusteringCoefficient
+RETURN gds.util.asNode(nodeId).nombre AS nombre,
+gds.util.asNode(nodeId).seguidores AS seguidores,
+gds.util.asNode(nodeId).categoria AS categoria,
+localClusteringCoefficient AS coeficiente_clustering_local
+ORDER BY coeficiente_clustering_local DESC",21,13,false
