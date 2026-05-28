@@ -1,2 +1,0 @@
-(mover r hab1 pasillo)
-(mover r pasillo cocina)
