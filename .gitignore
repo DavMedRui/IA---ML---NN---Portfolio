@@ -39,3 +39,6 @@ Thumbs.db
 # Model files (use Git LFS)
 *.keras
 *.h5
+
+# Archivo grande de algoritmos geneticos (545MB)
+04-AI-Models/AlgoritmosGeneticos/Ficheros para la Práctica 1.1-20251104/FicherosPractica1,1
